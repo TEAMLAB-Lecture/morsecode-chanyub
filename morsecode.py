@@ -93,6 +93,7 @@ def is_validated_english_sentence(user_input):
     special_symbol = ['_','@','#','$','%','^','&','*','(',')','-','+','=','[',']','{','}','\"','\'',';',':','\\','|','`','~']
     sentence_symbol = ['.',',','!','?']
     count_sentence_symbol = 0
+    count_blank = 0
     
     result = True
 
@@ -103,7 +104,12 @@ def is_validated_english_sentence(user_input):
             result = False
         if x in sentence_symbol :
             count_sentence_symbol += 1
+        if x not in sentence_symbol :
+            if x == " " :
+                count_blank += 1
     if count_sentence_symbol == len(user_input) :
+        result = False
+    if count_blank == len(user_input) :
         result = False
 
     return result
@@ -140,17 +146,20 @@ def is_validated_morse_code(user_input):
     result = True
 
     morse_symbol = ["-",".",","," "]
-    for x in user_input :
-        if x not in morse_symbol :
-            result = False
+    # for x in user_input :
+    #     print(x)
+    #     if x not in morse_symbol :
+    #         result = False
     morse_dict = get_morse_code_dict()
     if len(user_input.split(" ")) == 1 :
         if user_input not in morse_dict.values() :
             result = False
     else :
         splited_user_input = user_input.split(" ")
+        # print("splited input :",splited_user_input)
         for code in splited_user_input :
-            if code not in morse_dict.values() :
+            # print(code)
+            if code != '' and code not in morse_dict.values() :
                 result = False
 
     return result
@@ -319,11 +328,11 @@ def encoding_sentence(english_sentence):
     # print(cleaned)
     cleaned_upper = cleaned.upper()
     # print(cleaned_upper)
-    for x in cleaned_upper :
-        if x == " " :
-            result += " "
-        else :
-            result += encoding_character(x)
+    cleaned_real = cleaned_upper.split()
+    for word in cleaned_real :
+        result += " "
+        for spelling in word :
+            result += encoding_character(spelling)
             result += " "
     result = result.lstrip()
     result = result.rstrip()
